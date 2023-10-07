@@ -11,7 +11,8 @@ then
     pkg install xz-utils -y -qq
     pkg install wget -y -qq
 
-    #sudo mount -o rw,remount /data 2> /dev/null
+    # Tampilkan bar loading
+    (while :; do echo -n '.'; sleep 1; done) | dialog --title "Installing Ubuntu" --gauge "Please wait..." 7 50
 
     # Memeriksa arsitektur perangkat
     case `dpkg --print-architecture` in
@@ -65,6 +66,12 @@ then
     # Membersihkan instalasi
     rm -rf ../ubuntu-termux
     rm ../install
+
+    # Tutup bar loading
+    exec 3>&1
+    exec 1>&2
+    dialog --title "Installation Complete" --msgbox "Installation completed successfully!" 7 50
+    exec 1>&3
 
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Instalasi berhasil! \e[0m"
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Gunakan perintah 'ubuntu' untuk memulai sistem. \e[0m"
