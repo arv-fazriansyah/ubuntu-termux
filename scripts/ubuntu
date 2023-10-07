@@ -8,37 +8,49 @@ export HOME=/root
 export USER=root
 export LOGNAME=root
 unset LD_PRELOAD
+#!/system/bin/sh
+
 localbuild="/data/local/tmp/ubuntu"
 
-# Fungsi untuk menghapus instalasi Ubuntu
+# Fungsi untuk menghapus Ubuntu
 uninstall() {
-  echo "Menghapus instalasi Ubuntu..."
-  
   if [ -d "$localbuild" ]; then
-    # Hapus direktori instalasi Ubuntu dengan hak superuser
-    su -c "rm -rf $localbuild"
-    
-    if [ -d "$localbuild" ]; then
-      echo "Gagal menghapus instalasi Ubuntu. Silakan restart perangkat dan coba lagi."
+    echo "Menghapus Ubuntu..."
+    if sudo umount -l $localbuild/dev 2>/dev/null && \
+       sudo umount -l $localbuild/dev/pts 2>/dev/null && \
+       sudo umount -l $localbuild/proc 2>/dev/null && \
+       sudo umount -l $localbuild/sys 2>/dev/null && \
+       sudo umount -l $localbuild/tmp 2>/dev/null; then
+      sudo rm -rf $localbuild
+      rm $PREFIX/bin/ubuntu 2>/dev/null
+      echo "Penghapusan selesai!"
     else
-      echo "Instalasi Ubuntu telah berhasil dihapus."
-      rm "$PREFIX/bin/ubuntu" 2>/dev/null
+      echo "Gagal menghapus Ubuntu."
     fi
   else
-    echo "Instalasi Ubuntu tidak ditemukan."
-    rm "$PREFIX/bin/ubuntu" 2>/dev/null
+    rm $PREFIX/bin/ubuntu 2>/dev/null
+    echo "Tidak ada instalasi Ubuntu yang ditemukan."
   fi
 }
 
-# Periksa apakah pengguna adalah root atau bukan
+# Periksa izin root
 if [ "$EUID" -ne 0 ]; then
-  # Cek argumen
-  if [ $# -eq 1 ] && [ "$1" = "--uninstall" ]; then
-    uninstall
-  else
-    echo "Anda harus menjalankan skrip ini dengan hak superuser (root) untuk menghapus instalasi Ubuntu."
-  fi
-else
-  # Pengguna adalah root, jalankan fungsi uninstall
-  uninstall
+  echo "Perintah ini memerlukan akses root."
+  exit 1
 fi
+
+# Periksa argumen
+case "$1" in
+  "")
+    uninstall
+    ;;
+  "-u" | "--uninstall")
+    uninstall
+    ;;
+  *)
+    echo "Perintah tidak valid. Gunakan -u atau --uninstall untuk menghapus Ubuntu."
+    exit 1
+    ;;
+esac
+
+exit 0
