@@ -24,7 +24,8 @@ then
         x86_64)
             archurl="amd64" ;;
         *)
-        echo -e "\e[31mArsitektur tidak dikenal\e[0m"; exit 1;;
+        echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Arsitektur tidak dikenal \e[0m"; exit 1;;
+        
     esac
 
     # Mengunduh file-file yang diperlukan untuk berfungsi dengan baik
@@ -65,8 +66,8 @@ then
     rm -rf ../ubuntu-termux
     rm ../install
 
-    echo -e "\e[32mInstalasi berhasil!\e[0m"
-    echo -e "\e[32mGunakan perintah 'ubuntu' untuk memulai sistem.\e[0m"
+    echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Instalasi berhasil! \e[0m"
+    echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Gunakan perintah 'ubuntu' untuk memulai sistem. \e[0m"
 else
-    echo -e "\e[31mInstalasi tidak berfungsi langsung dari root\e[0m"
+    echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Instalasi tidak berfungsi langsung dari root. \e[0m"
 fi
