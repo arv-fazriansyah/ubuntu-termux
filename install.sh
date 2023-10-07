@@ -62,7 +62,7 @@ then
     mv ./scripts/ubuntu $PREFIX/bin                              # Pintasan untuk memulai ubuntu
 
     # Membersihkan instalasi
-    rm -rf ../UbuntuTermuxRoot
+    rm -rf ../ubuntu-termux
     rm ../install
 
     echo "Instalasi berhasil!"
