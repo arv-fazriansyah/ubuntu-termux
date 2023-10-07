@@ -11,8 +11,13 @@ then
     pkg install xz-utils -y -qq
     pkg install wget -y -qq
 
-    # Tampilkan bar loading
-    (while :; do echo -n '.'; sleep 1; done) | dialog --title "Installing Ubuntu" --gauge "Please wait..." 7 50
+    # Bar loading tipe teks untuk instalasi paket
+    echo -n "Instalasi paket sedang berlangsung: "
+    for i in {1..10}; do
+        echo -n "█"
+        sleep 1  # Tidur selama 1 detik (ubah sesuai kebutuhan)
+    done
+    echo ""  # Pindah ke baris berikutnya setelah loading bar selesai
 
     # Memeriksa arsitektur perangkat
     case `dpkg --print-architecture` in
@@ -26,7 +31,6 @@ then
             archurl="amd64" ;;
         *)
         echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Arsitektur tidak dikenal \e[0m"; exit 1;;
-        
     esac
 
     # Mengunduh file-file yang diperlukan untuk berfungsi dengan baik
@@ -63,15 +67,17 @@ then
     sudo mv ./scripts/adduser $localbuild/sbin                   # Skrip kustom, untuk memperbaiki masalah internet
     mv ./scripts/ubuntu $PREFIX/bin                              # Pintasan untuk memulai ubuntu
 
+    # Bar loading tipe teks untuk proses instalasi Ubuntu
+    echo -n "Instalasi Ubuntu sedang berlangsung: "
+    for i in {1..10}; do
+        echo -n "█"
+        sleep 1  # Tidur selama 1 detik (ubah sesuai kebutuhan)
+    done
+    echo ""  # Pindah ke baris berikutnya setelah loading bar selesai
+
     # Membersihkan instalasi
     rm -rf ../ubuntu-termux
     rm ../install
-
-    # Tutup bar loading
-    exec 3>&1
-    exec 1>&2
-    dialog --title "Installation Complete" --msgbox "Installation completed successfully!" 7 50
-    exec 1>&3
 
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Instalasi berhasil! \e[0m"
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Gunakan perintah 'ubuntu' untuk memulai sistem. \e[0m"
