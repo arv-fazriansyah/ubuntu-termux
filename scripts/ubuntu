@@ -1,0 +1,109 @@
+#!/system/bin/sh
+# Perangkat Lunak dikembangkan oleh Trevias Xk
+# Media sosial: treviasxk
+# Github: https://github.com/treviasxk
+
+cmd=$1
+export bin=/system/bin
+export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export TERM=linux
+export HOME=/root
+export USER=root
+export LOGNAME=root
+unset LD_PRELOAD
+localbuild="/data/local/tmp/ubuntu"
+
+suuninstall (){
+  echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
+  if [ -d "$localbuild" ]
+  then
+    rm -rf $localbuild 2> /dev/null
+    if [ -d "$localbuild" ]
+    then
+      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m RESTART PERANGKAT DAN COBA LAGI! \e[0m"
+    else
+      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
+      rm $PREFIX/bin/ubuntu 2> /dev/null
+    fi
+  else
+      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
+      rm $PREFIX/bin/ubuntu 2> /dev/null
+  fi
+  exit
+}
+
+uninstall (){
+  echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
+  if [ -d "$localbuild" ]
+  then
+    sudo rm -rf $localbuild 2> /dev/null
+    if [ -d "$localbuild" ]
+    then
+      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m RESTART PERANGKAT DAN COBA LAGI! \e[0m"
+    else
+      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
+      rm $PREFIX/bin/ubuntu 2> /dev/null
+    fi
+  else
+    echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
+    rm $PREFIX/bin/ubuntu 2> /dev/null
+  fi
+
+  exit
+}
+
+if [ "$EUID" -ne 0 ]
+then
+  case $cmd in
+    "")
+      # kosong
+    ;;
+    "-u")
+      suuninstall
+    ;;
+    "--uninstall")
+      suuninstall
+    ;;
+    *)
+      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PERINTAH TIDAK VALID! \e[0m"
+      exit
+    ;;
+  esac
+  setenforce 0
+  mountpoint -q $localbuild/dev 2> /dev/null
+  mount -o bind /dev $localbuild/dev 2> /dev/null
+  mount -t devpts devpts $localbuild/dev/pts 2> /dev/null
+  mount -t proc proc $localbuild/proc 2> /dev/null
+  mount -t sysfs sysfs $localbuild/sys 2> /dev/null
+  mount -t tmpfs none $localbuild/tmp 2> /dev/null
+
+  clear
+  chroot $localbuild /bin/login -f root
+else
+  case $cmd in
+    "")
+      # kosong
+    ;;
+    "-u")
+      uninstall
+    ;;
+    "--uninstall")
+      uninstall
+    ;;
+    *)
+      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PERINTAH TIDAK VALID! \e[0m"
+      exit
+    ;;
+  esac
+  sudo setenforce 0
+  sudo mount -o remount,suid /data 2> /dev/null
+  sudo mountpoint -q $localbuild/dev 2> /dev/null
+  sudo mount -o bind /dev $localbuild/dev 2> /dev/null
+  sudo mount -t devpts devpts $localbuild/dev/pts 2> /dev/null
+  sudo mount -t proc proc $localbuild/proc 2> /dev/null
+  sudo mount -t sysfs sysfs $localbuild/sys 2> /dev/null
+  sudo mount -t tmpfs none $localbuild/tmp 2> /dev/null
+
+  clear
+  sudo chroot $localbuild /bin/login -f root
+fi
