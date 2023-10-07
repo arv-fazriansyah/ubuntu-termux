@@ -17,12 +17,10 @@ curl -s -L https://raw.githubusercontent.com/arv-fazriansyah/ubuntu-termux/main/
 ## Uninstall
 Pertama, hentikan semua layanan dan keluar dari Ubuntu dengan perintah `exit`, kemudian tutup Termux. Setelah itu, masukkan perintah shell di bawah ini ke Termux untuk melakukan deinstalasi. Jika Anda mengalami masalah, restart smartphone Anda dan jalankan kode lagi.
 ```bash
-su
 ubuntu -u
 ```
 atau
 ```bash
-su
 ubuntu --uninstall
 ```
 ### Masalah saat apt upgrade
