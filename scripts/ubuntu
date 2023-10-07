@@ -15,8 +15,8 @@ uninstall() {
   echo "Menghapus instalasi Ubuntu..."
   
   if [ -d "$localbuild" ]; then
-    # Hapus direktori instalasi Ubuntu
-    rm -rf "$localbuild"
+    # Hapus direktori instalasi Ubuntu dengan hak superuser
+    su -c "rm -rf $localbuild"
     
     if [ -d "$localbuild" ]; then
       echo "Gagal menghapus instalasi Ubuntu. Silakan restart perangkat dan coba lagi."
