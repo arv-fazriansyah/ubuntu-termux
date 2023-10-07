@@ -11,13 +11,7 @@ then
     pkg install xz-utils -y -qq
     pkg install wget -y -qq
 
-    # Bar loading tipe teks untuk instalasi paket
-    echo -n "Instalasi paket sedang berlangsung: "
-    for i in {1..10}; do
-        echo -n "█"
-        sleep 1  # Tidur selama 1 detik (ubah sesuai kebutuhan)
-    done
-    echo ""  # Pindah ke baris berikutnya setelah loading bar selesai
+    #sudo mount -o rw,remount /data 2> /dev/null
 
     # Memeriksa arsitektur perangkat
     case `dpkg --print-architecture` in
@@ -30,7 +24,7 @@ then
         x86_64)
             archurl="amd64" ;;
         *)
-        echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Arsitektur tidak dikenal \e[0m"; exit 1;;
+            echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m Arsitektur tidak dikenal \e[0m"; exit 1;;
     esac
 
     # Mengunduh file-file yang diperlukan untuk berfungsi dengan baik
@@ -66,14 +60,6 @@ then
     sudo mv ./scripts/gshadow $localbuild/etc                    # Keamanan informasi grup
     sudo mv ./scripts/adduser $localbuild/sbin                   # Skrip kustom, untuk memperbaiki masalah internet
     mv ./scripts/ubuntu $PREFIX/bin                              # Pintasan untuk memulai ubuntu
-
-    # Bar loading tipe teks untuk proses instalasi Ubuntu
-    echo -n "Instalasi Ubuntu sedang berlangsung: "
-    for i in {1..10}; do
-        echo -n "█"
-        sleep 1  # Tidur selama 1 detik (ubah sesuai kebutuhan)
-    done
-    echo ""  # Pindah ke baris berikutnya setelah loading bar selesai
 
     # Membersihkan instalasi
     rm -rf ../ubuntu-termux
