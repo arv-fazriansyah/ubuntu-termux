@@ -17,6 +17,9 @@ localbuild="/data/local/tmp/ubuntu"
 # Fungsi untuk menghapus instalasi Ubuntu
 uninstall() {
   echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
+
+  # Mencari dan menghentikan proses berdasarkan string target
+  pkill -f $localbuild
   
   # Hapus direktori instalasi Ubuntu
   sudo rm -rf $localbuild 2> /dev/null
