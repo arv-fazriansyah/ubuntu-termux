@@ -67,7 +67,7 @@ then
       exit
     ;;
   esac
-  # setenforce 0
+  setenforce 0
   mountpoint -q $localbuild/dev 2> /dev/null
   mount -o bind /dev $localbuild/dev 2> /dev/null
   mount -t devpts devpts $localbuild/dev/pts 2> /dev/null
@@ -93,7 +93,7 @@ else
       exit
     ;;
   esac
-  # sudo setenforce 0
+  sudo setenforce 0
   sudo mount -o remount,suid /data 2> /dev/null
   sudo mountpoint -q $localbuild/dev 2> /dev/null
   sudo mount -o bind /dev $localbuild/dev 2> /dev/null
