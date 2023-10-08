@@ -22,6 +22,9 @@ suuninstall (){
     else
       echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
       rm $PREFIX/bin/ubuntu 2> /dev/null
+
+      # Tambahkan perintah untuk menghapus direktori localbuild
+      rmdir /data/local/tmp/ubuntu 2> /dev/null
     fi
   else
       echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
@@ -41,6 +44,9 @@ uninstall (){
     else
       echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
       rm $PREFIX/bin/ubuntu 2> /dev/null
+
+      # Tambahkan perintah untuk menghapus direktori localbuild
+      rmdir /data/local/tmp/ubuntu 2> /dev/null
     fi
   else
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
