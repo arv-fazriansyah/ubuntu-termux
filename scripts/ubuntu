@@ -14,24 +14,36 @@ unset LD_PRELOAD
 unset PROMPT_COMMAND
 localbuild="/data/local/tmp/ubuntu"
 
-# Fungsi untuk menghapus Ubuntu
+# Fungsi untuk menghapus instalasi Ubuntu
 uninstall() {
   echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
-  sudo rm -rf "$localbuild" 2> /dev/null
+  
+  # Hapus direktori instalasi Ubuntu
+  rm -rf $localbuild 2> /dev/null
+
+  # Periksa apakah direktori masih ada
   if [ -d "$localbuild" ]; then
+    echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m GAGAL MENGHAPUS! \e[0m"
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m RESTART PERANGKAT DAN COBA LAGI! \e[0m"
   else
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
-    rm "$PREFIX/bin/ubuntu" 2> /dev/null
-    rmdir "$localbuild" 2> /dev/null
+    
+    # Hapus symlink jika ada
+    rm $PREFIX/bin/ubuntu 2> /dev/null
+
+    # Hapus direktori localbuild jika kosong
+    rmdir $localbuild 2> /dev/null
   fi
   exit
 }
 
-# Jalankan perintah jika pengguna bukan root
+# Periksa izin superuser
 if [ "$EUID" -ne 0 ]; then
-  case "$cmd" in
-    "" | "-u" | "--uninstall")
+  case $cmd in
+    "")
+      # Tidak ada perintah, lanjutkan
+      ;;
+    "-u" | "--uninstall")
       uninstall
       ;;
     *)
@@ -40,20 +52,25 @@ if [ "$EUID" -ne 0 ]; then
       ;;
   esac
 
-  # Setting beberapa perintah dan mount poin
+  # Izinkan mode penegakan selinux
   setenforce 0
-  mountpoint -q "$localbuild/dev" 2> /dev/null
-  mount -o bind /dev "$localbuild/dev" 2> /dev/null
-  mount -t devpts devpts "$localbuild/dev/pts" 2> /dev/null
-  mount -t proc proc "$localbuild/proc" 2> /dev/null
-  mount -t sysfs sysfs "$localbuild/sys" 2> /dev/null
-  mount -t tmpfs none "$localbuild/tmp" 2> /dev/null
+  
+  # Mount direktori yang diperlukan ke dalam chroot
+  mountpoint -q $localbuild/dev 2> /dev/null
+  mount -o bind /dev $localbuild/dev 2> /dev/null
+  mount -t devpts devpts $localbuild/dev/pts 2> /dev/null
+  mount -t proc proc $localbuild/proc 2> /dev/null
+  mount -t sysfs sysfs $localbuild/sys 2> /dev/null
+  mount -t tmpfs none $localbuild/tmp 2> /dev/null
 
   clear
-  chroot "$localbuild" /bin/login -f root
+  chroot $localbuild /bin/login -f root
 else
-  case "$cmd" in
-    "" | "-u" | "--uninstall")
+  case $cmd in
+    "")
+      # Tidak ada perintah, lanjutkan
+      ;;
+    "-u" | "--uninstall")
       uninstall
       ;;
     *)
@@ -62,16 +79,20 @@ else
       ;;
   esac
 
-  # Setting beberapa perintah dan mount poin dengan sudo
+  # Izinkan mode penegakan selinux
   sudo setenforce 0
+  
+  # Izinkan suid di /data
   sudo mount -o remount,suid /data 2> /dev/null
-  sudo mountpoint -q "$localbuild/dev" 2> /dev/null
-  sudo mount -o bind /dev "$localbuild/dev" 2> /dev/null
-  sudo mount -t devpts devpts "$localbuild/dev/pts" 2> /dev/null
-  sudo mount -t proc proc "$localbuild/proc" 2> /dev/null
-  sudo mount -t sysfs sysfs "$localbuild/sys" 2> /dev/null
-  sudo mount -t tmpfs none "$localbuild/tmp" 2> /dev/null
+
+  # Mount direktori yang diperlukan ke dalam chroot
+  sudo mountpoint -q $localbuild/dev 2> /dev/null
+  sudo mount -o bind /dev $localbuild/dev 2> /dev/null
+  sudo mount -t devpts devpts $localbuild/dev/pts 2> /dev/null
+  sudo mount -t proc proc $localbuild/proc 2> /dev/null
+  sudo mount -t sysfs sysfs $localbuild/sys 2> /dev/null
+  sudo mount -t tmpfs none $localbuild/tmp 2> /dev/null
 
   clear
-  sudo chroot "$localbuild" /bin/login -f root
+  sudo chroot $localbuild /bin/login -f root
 fi
