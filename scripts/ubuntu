@@ -1,39 +1,42 @@
 #!/system/bin/sh
 
-# Mengambil argumen pertama dari command line
-cmd=$1
+# Menyimpan perintah dari argumen pertama
+cmd="$1"
 
-# Konfigurasi environment
-export bin=/system/bin
-export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
-export TERM=linux
-export HOME=/root
-export USER=root
-export LOGNAME=root
+# Pengaturan lingkungan
+export bin="/system/bin"
+export PATH="/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH"
+export TERM="linux"
+export HOME="/root"
+export USER="root"
+export LOGNAME="root"
 unset LD_PRELOAD
 unset PROMPT_COMMAND
 
-# Direktori tempat Ubuntu diinstal
+# Lokasi build lokal Ubuntu
 localbuild="/data/local/tmp/ubuntu"
 
-# Fungsi untuk menghapus Ubuntu
+# Fungsi untuk menghapus instalasi Ubuntu
 uninstall() {
   echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
-  sudo rm -rf $localbuild 2> /dev/null
+  sudo rm -rf "$localbuild" 2> /dev/null
   if [ -d "$localbuild" ]; then
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m RESTART PERANGKAT DAN COBA LAGI! \e[0m"
   else
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
-    rm $PREFIX/bin/ubuntu 2> /dev/null
+    rm "$PREFIX/bin/ubuntu" 2> /dev/null
+
+    # Tambahkan perintah untuk menghapus direktori localbuild
     rmdir /data/local/tmp/ubuntu 2> /dev/null
   fi
   exit
 }
 
-# Cek apakah script dijalankan sebagai root atau tidak
+# Cek jika pengguna bukan root
 if [ "$EUID" -ne 0 ]; then
-  case $cmd in
+  case "$cmd" in
     "" | "-u" | "--uninstall")
+      # Panggil fungsi uninstall untuk menghapus instalasi Ubuntu
       uninstall
       ;;
     *)
@@ -42,17 +45,20 @@ if [ "$EUID" -ne 0 ]; then
       ;;
   esac
 
-  # Konfigurasi lingkungan untuk chroot
+  # Pengaturan lingkungan untuk instalasi Ubuntu
   setenforce 0
-  mountpoint -q $localbuild/dev 2> /dev/null
-  mount -o bind /dev $localbuild/dev 2> /dev/null
-  mount -t devpts devpts $localbuild/dev/pts 2> /dev/null
-  mount -t proc proc $localbuild/proc 2> /dev/null
-  mount -t sysfs sysfs $localbuild/sys 2> /dev/null
-  mount -t tmpfs none $localbuild/tmp 2> /dev/null
+  mountpoint -q "$localbuild/dev" 2> /dev/null
+  mount -o bind /dev "$localbuild/dev" 2> /dev/null
+  mount -t devpts devpts "$localbuild/dev/pts" 2> /dev/null
+  mount -t proc proc "$localbuild/proc" 2> /dev/null
+  mount -t sysfs sysfs "$localbuild/sys" 2> /dev/null
+  mount -t tmpfs none "$localbuild/tmp" 2> /dev/null
 else
-  case $cmd in
+  # Pengguna adalah root
+
+  case "$cmd" in
     "" | "-u" | "--uninstall")
+      # Panggil fungsi uninstall untuk menghapus instalasi Ubuntu
       uninstall
       ;;
     *)
@@ -61,17 +67,17 @@ else
       ;;
   esac
 
-  # Konfigurasi lingkungan untuk chroot (untuk root)
+  # Pengaturan lingkungan untuk instalasi Ubuntu dengan hak superuser
   sudo setenforce 0
   sudo mount -o remount,suid /data 2> /dev/null
-  sudo mountpoint -q $localbuild/dev 2> /dev/null
-  sudo mount -o bind /dev $localbuild/dev 2> /dev/null
-  sudo mount -t devpts devpts $localbuild/dev/pts 2> /dev/null
-  sudo mount -t proc proc $localbuild/proc 2> /dev/null
-  sudo mount -t sysfs sysfs $localbuild/sys 2> /dev/null
-  sudo mount -t tmpfs none $localbuild/tmp 2> /dev/null
+  sudo mountpoint -q "$localbuild/dev" 2> /dev/null
+  sudo mount -o bind /dev "$localbuild/dev" 2> /dev/null
+  sudo mount -t devpts devpts "$localbuild/dev/pts" 2> /dev/null
+  sudo mount -t proc proc "$localbuild/proc" 2> /dev/null
+  sudo mount -t sysfs sysfs "$localbuild/sys" 2> /dev/null
+  sudo mount -t tmpfs none "$localbuild/tmp" 2> /dev/null
 fi
 
-# Masuk ke chroot
+# Clear screen dan masuk ke instalasi Ubuntu dalam chroot
 clear
-chroot $localbuild /bin/login -f root
+chroot "$localbuild" /bin/login -f root
