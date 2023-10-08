@@ -8,7 +8,7 @@ export HOME=/root
 export USER=root
 export LOGNAME=root
 unset LD_PRELOAD
-echo 'unset PROMPT_COMMAND' | sudo tee -a /etc/bash.bashrc
+unset PROMPT_COMMAND
 localbuild="/data/local/tmp/ubuntu"
 
 suuninstall (){
