@@ -11,7 +11,6 @@ export HOME="/root"
 export USER="root"
 export LOGNAME="root"
 unset LD_PRELOAD
-unset PROMPT_COMMAND
 localbuild="/data/local/tmp/ubuntu"
 
 # Fungsi untuk menghapus instalasi Ubuntu
