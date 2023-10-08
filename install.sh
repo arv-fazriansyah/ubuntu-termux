@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
-#localbuild="/data/local/tmp/ubuntu"
-localbuild="/data/data/com.termux/files/home/ubuntu"
+localbuild="/data/local/tmp/ubuntu"
+#localbuild="/data/data/com.termux/files/home/ubuntu"
 
 if [ "$EUID" -ne 0 ]
 then
