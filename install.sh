@@ -38,6 +38,8 @@ then
     # Membuat folder di sistem
     sudo mkdir -p $localbuild                                    # Folder untuk instalasi ubuntu
     sudo mkdir -p $localbuild/dev                                # Folder untuk sumber daya tambahan ubuntu
+    sudo mkdir -p $localbuild/run/sshd                           # Membuat direktori /run/sshd jika belum ada
+    
 
     # Mengekstrak sistem ubuntu ke dalam folder yang telah dibuat di sistem
     sudo tar -xzf ./ubuntu-base.tar.gz --exclude='dev' -C $localbuild
