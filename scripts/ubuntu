@@ -12,56 +12,57 @@ unset PROMPT_COMMAND
 localbuild="/data/local/tmp/ubuntu"
 #localbuild="/data/data/com.termux/files/home/ubuntu"
 
-uninstall (){
+uninstall() {
   echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
-  if [ -d "$localbuild" ]
-  then
-    sudo rm -rf $localbuild
-    if [ -d "$localbuild" ]
-    then
-      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m RESTART PERANGKAT DAN COBA LAGI! \e[0m"
-    else
-      echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
-      rm $PREFIX/bin/ubuntu 2> /dev/null
-    fi
+
+  # Hapus direktori instalasi Ubuntu jika ada
+  if [ -d "$localbuild" ]; then
+    sudo rm -rf "$localbuild"
+  fi
+
+  # Hapus pintasan ubuntu dari $PREFIX/bin
+  rm "$PREFIX/bin/ubuntu" 2> /dev/null
+
+  if [ -d "$localbuild" ] || [ -f "$PREFIX/bin/ubuntu" ]; then
+    echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m GAGAL MENGHAPUS! \e[0m"
+    exit 1
   else
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
-    rm $PREFIX/bin/ubuntu 2> /dev/null
+    exit 0
   fi
-  exit
 }
 
-if [ "$EUID" -ne 0 ]
-then
+# Menggabungkan fungsi-fungsi serupa
+if [ "$EUID" -ne 0 ]; then
   case $cmd in
+    "-u" | "--uninstall")
+      uninstall
+      ;;
     "")
       # kosong
-    ;;
-    "-u"|"--uninstall")
-      uninstall
-    ;;
+      ;;
     *)
       echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PERINTAH TIDAK VALID! \e[0m"
-      exit
-    ;;
+      exit 1
+      ;;
   esac
 
   clear
-  chroot $localbuild /bin/login -f root
+  chroot "$localbuild" /bin/login -f root
 else
   case $cmd in
+    "-u" | "--uninstall")
+      uninstall
+      ;;
     "")
       # kosong
-    ;;
-    "-u"|"--uninstall")
-      uninstall
-    ;;
+      ;;
     *)
       echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PERINTAH TIDAK VALID! \e[0m"
-      exit
-    ;;
+      exit 1
+      ;;
   esac
 
   clear
-  sudo chroot $localbuild /bin/login -f root
+  sudo chroot "$localbuild" /bin/login -f root
 fi
