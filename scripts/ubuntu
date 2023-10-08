@@ -19,7 +19,7 @@ uninstall() {
   echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
   
   # Hapus direktori instalasi Ubuntu
-  rm -rf $localbuild 2> /dev/null
+  sudo rm -rf $localbuild 2> /dev/null
 
   # Periksa apakah direktori masih ada
   if [ -d "$localbuild" ]; then
@@ -29,10 +29,10 @@ uninstall() {
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
     
     # Hapus symlink jika ada
-    rm $PREFIX/bin/ubuntu 2> /dev/null
+    sudo rm $PREFIX/bin/ubuntu 2> /dev/null
 
     # Hapus direktori localbuild jika kosong
-    rmdir $localbuild 2> /dev/null
+    sudo rmdir $localbuild 2> /dev/null
   fi
   exit
 }
