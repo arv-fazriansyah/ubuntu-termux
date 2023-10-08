@@ -3,7 +3,7 @@
 # Menyimpan perintah dari argumen pertama
 cmd="$1"
 
-# Pengaturan lingkungan
+# Set variabel-variabel umum
 export bin="/system/bin"
 export PATH="/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH"
 export TERM="linux"
@@ -12,11 +12,9 @@ export USER="root"
 export LOGNAME="root"
 unset LD_PRELOAD
 unset PROMPT_COMMAND
-
-# Lokasi build lokal Ubuntu
 localbuild="/data/local/tmp/ubuntu"
 
-# Fungsi untuk menghapus instalasi Ubuntu
+# Fungsi untuk menghapus Ubuntu
 uninstall() {
   echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
   sudo rm -rf "$localbuild" 2> /dev/null
@@ -25,18 +23,15 @@ uninstall() {
   else
     echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m PENGHAPUSAN SELESAI! \e[0m"
     rm "$PREFIX/bin/ubuntu" 2> /dev/null
-
-    # Tambahkan perintah untuk menghapus direktori localbuild
-    rmdir /data/local/tmp/ubuntu 2> /dev/null
+    rmdir "$localbuild" 2> /dev/null
   fi
   exit
 }
 
-# Cek jika pengguna bukan root
+# Jalankan perintah jika pengguna bukan root
 if [ "$EUID" -ne 0 ]; then
   case "$cmd" in
     "" | "-u" | "--uninstall")
-      # Panggil fungsi uninstall untuk menghapus instalasi Ubuntu
       uninstall
       ;;
     *)
@@ -45,7 +40,7 @@ if [ "$EUID" -ne 0 ]; then
       ;;
   esac
 
-  # Pengaturan lingkungan untuk instalasi Ubuntu
+  # Setting beberapa perintah dan mount poin
   setenforce 0
   mountpoint -q "$localbuild/dev" 2> /dev/null
   mount -o bind /dev "$localbuild/dev" 2> /dev/null
@@ -53,12 +48,12 @@ if [ "$EUID" -ne 0 ]; then
   mount -t proc proc "$localbuild/proc" 2> /dev/null
   mount -t sysfs sysfs "$localbuild/sys" 2> /dev/null
   mount -t tmpfs none "$localbuild/tmp" 2> /dev/null
-else
-  # Pengguna adalah root
 
+  clear
+  chroot "$localbuild" /bin/login -f root
+else
   case "$cmd" in
     "" | "-u" | "--uninstall")
-      # Panggil fungsi uninstall untuk menghapus instalasi Ubuntu
       uninstall
       ;;
     *)
@@ -67,7 +62,7 @@ else
       ;;
   esac
 
-  # Pengaturan lingkungan untuk instalasi Ubuntu dengan hak superuser
+  # Setting beberapa perintah dan mount poin dengan sudo
   sudo setenforce 0
   sudo mount -o remount,suid /data 2> /dev/null
   sudo mountpoint -q "$localbuild/dev" 2> /dev/null
@@ -76,8 +71,7 @@ else
   sudo mount -t proc proc "$localbuild/proc" 2> /dev/null
   sudo mount -t sysfs sysfs "$localbuild/sys" 2> /dev/null
   sudo mount -t tmpfs none "$localbuild/tmp" 2> /dev/null
-fi
 
-# Clear screen dan masuk ke instalasi Ubuntu dalam chroot
-clear
-chroot "$localbuild" /bin/login -f root
+  clear
+  sudo chroot "$localbuild" /bin/login -f root
+fi
