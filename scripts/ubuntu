@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-cmd="$1"
+cmd=$1
 export bin=/system/bin
 export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export TERM=linux
@@ -10,6 +10,7 @@ export LOGNAME=root
 unset LD_PRELOAD
 unset PROMPT_COMMAND
 localbuild="/data/local/tmp/ubuntu"
+#localbuild="/data/data/com.termux/files/home/ubuntu"
 
 uninstall() {
   echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MENGHAPUS UBUNTU... \e[0m"
@@ -31,26 +32,11 @@ uninstall() {
   fi
 }
 
-restart() {
-  echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m MERESTART UBUNTU... \e[0m"
-
-  # Cek apakah direktori instalasi Ubuntu ada
-  if [ -d "$localbuild" ]; then
-    sudo chroot "$localbuild" /sbin/reboot
-  else
-    echo -e "\e[30;48;5;82m STATUS \e[40;38;5;82m INSTALASI TIDAK DITEMUKAN! \e[0m"
-    exit 1
-  fi
-}
-
 # Menggabungkan fungsi-fungsi serupa
 if [ "$EUID" -ne 0 ]; then
-  case "$cmd" in
+  case $cmd in
     "-u" | "--uninstall")
       uninstall
-      ;;
-    "restart")
-      restart
       ;;
     "")
       # kosong
@@ -64,12 +50,9 @@ if [ "$EUID" -ne 0 ]; then
   clear
   chroot "$localbuild" /bin/login -f root
 else
-  case "$cmd" in
+  case $cmd in
     "-u" | "--uninstall")
       uninstall
-      ;;
-    "restart")
-      restart
       ;;
     "")
       # kosong
