@@ -20,6 +20,13 @@ uninstall() {
   # Mencari dan menghentikan proses berdasarkan string target
   pkill -f $localbuild
   
+  # Unmount direktori yang telah di-mount
+  sudo umount $localbuild/dev/pts
+  sudo umount $localbuild/proc
+  sudo umount $localbuild/sys
+  sudo umount $localbuild/tmp
+  sudo umount $localbuild/dev
+  
   # Hapus direktori instalasi Ubuntu
   sudo rm -rf $localbuild 2> /dev/null
 
